@@ -1,10 +1,10 @@
-const axios = require('axios'); 
-const cheerio = require('cheerio'); 
+import axios from 'axios';
+import cheerio from 'cheerio';
 
 
 
-const Manga = async (anime) =>{
-	const komik = await axios.get('https://bacakomik.co/komik/kami-no-techigai-de-shindara-zumi-de-isekai-ni-hourikomare-mashita/')
+export const Manga = async (title) =>{
+	const komik = await axios.get(`https://bacakomik.co/komik/${title}/`)
 	const $ = cheerio.load(komik.data)
 	const genreKomik = []
 	
@@ -15,7 +15,7 @@ const Manga = async (anime) =>{
 
 
 	const dataKomik = {
-		title : $('.infoanime h1').html(),
+		title : $('.infoanime h1').html().slice(6),
 		cover : $('.infoanime .thumb img').attr('src'),
 		status : $('.spe span:nth-child(1)').text().slice(8),
 		format : $('.spe span:nth-child(2)').text().slice(8),
@@ -35,8 +35,8 @@ const Manga = async (anime) =>{
 }
 
 const recentUpdate = async (page) =>{
-	const data = await axios.get('https://bacakomik.co/komik-terbaru')
-	const $ = cheerio.load(data.data);
+	const data = await get('https://bacakomik.co/komik-terbaru')
+	const $ = load(data.data);
 	const recentList = []
 
 	
@@ -65,9 +65,9 @@ const komikList = async (title, genre, status, berwarna, sortby, tipe) => {
 	const sortbyQ = sortby ? sortby : ''
 	const titleQ = title ? title : ''
 
-	const komik = await axios.get(
+	const komik = await get(
 		`https://bacakomik.co/daftar-manga/?status=${OngingQ}&type=${tipeQ}&format=${BerwarnaQ}&order=${sortbyQ}&title=`)
-	const $ = cheerio.load(komik.data)
+	const $ = load(komik.data)
 	const list = []
 
 
@@ -85,8 +85,8 @@ const komikList = async (title, genre, status, berwarna, sortby, tipe) => {
 
 
 const manhuaList = async (query) => {
-	const komik = await axios.get('https://bacakomik.co/manhua/')
-	const $ = cheerio.load(komik.data)
+	const komik = await get('https://bacakomik.co/manhua/')
+	const $ = load(komik.data)
 	const list = []
 
 
@@ -104,8 +104,8 @@ const manhuaList = async (query) => {
 
 
 const manhwaList = async (query) => {
-	const komik = await axios.get('https://bacakomik.co/manhwa/')
-	const $ = cheerio.load(komik.data)
+	const komik = await get('https://bacakomik.co/manhwa/')
+	const $ = load(komik.data)
 	const list = []
 
 
@@ -123,8 +123,8 @@ const manhwaList = async (query) => {
 
 
 const coloredManga = async (page) =>{
-	const data = await axios.get('https://bacakomik.co/komik-terbaru')
-	const $ = cheerio.load(data.data);
+	const data = await get('https://bacakomik.co/komik-terbaru')
+	const $ = load(data.data);
 	const coloredList = []
 
 	
@@ -142,8 +142,8 @@ const coloredManga = async (page) =>{
 
 
 const genresList = async () =>{
-	const data = await axios.get('https://bacakomik.co/daftar-genre/')
-	const $ = cheerio.load(data.data)
+	const data = await get('https://bacakomik.co/daftar-genre/')
+	const $ = load(data.data)
 	const list = []
 
 
@@ -155,11 +155,13 @@ const genresList = async () =>{
 }
 
 
+
+
+
 const test = async () =>{
-	data = await Manga()
+	data = await recentUpdate()
 	console.log(data);
 }
 
-test()
 
 
