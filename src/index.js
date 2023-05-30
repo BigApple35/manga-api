@@ -3,7 +3,7 @@ import cheerio from 'cheerio';
 
 
 
-export const Manga = async (title) =>{
+export const Komik = async (title) =>{
 	const komik = await axios.get(`https://bacakomik.co/komik/${title}/`)
 	const $ = cheerio.load(komik.data)
 	const genreKomik = []
@@ -34,9 +34,9 @@ export const Manga = async (title) =>{
 
 }
 
-const recentUpdate = async (page) =>{
-	const data = await get('https://bacakomik.co/komik-terbaru')
-	const $ = load(data.data);
+export const recentUpdate = async (page) =>{
+	const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page}/`)
+	const $ = cheerio.load(data.data);
 	const recentList = []
 
 	
@@ -53,21 +53,29 @@ const recentUpdate = async (page) =>{
 }
 
 
-const komikList = async (title, genre, status, berwarna, sortby, tipe) => {
-	const genreQ = genre.map((val, i) =>{
+export const searchKomik = async (title, genre, status, berwarna, sortby, tipe, page) => {
+	
+	// genre can be seen in genre list
+	const genreQ = genre ===undefined ? '' :Array.isArray(genre) ? genre.map((val, i) =>{
 		val = `genre%5B%5D=${val}&`
 		return val
-	}).join('')
+	}).join('') : `genre%5B%5D=${genre}&` 
+	// Ongoing and Colored : true, false
+	const statusQ = status ? status : ''
+	const BerwarnaQ = berwarna == 'true' ? 1 : berwarna === undefined ?  '' : 0 
 
-	const OngingQ = status ? 'Ongoing' : status === '' ?  '' : 'Completed' 
-	const BerwarnaQ = berwarna ? 1 : status === undefined ?  '' : 0 
+	// type : manga, manhwa, manhua
 	const tipeQ = tipe ? tipe : ''
+
+	// sorby : a-z, z-a, update(latest updated manga(chapter)), added(latest added manga), popular
 	const sortbyQ = sortby ? sortby : ''
 	const titleQ = title ? title : ''
 
-	const komik = await get(
-		`https://bacakomik.co/daftar-manga/?status=${OngingQ}&type=${tipeQ}&format=${BerwarnaQ}&order=${sortbyQ}&title=`)
-	const $ = load(komik.data)
+
+	const pageQ = page ? page : 1
+	const komik = await axios.get(
+		`https://bacakomik.co/daftar-manga/page/${pageQ}/?${genreQ}status=${statusQ}&type=${tipeQ}&format=${BerwarnaQ}&order=${sortbyQ}&title=${titleQ}`)
+	const $ = cheerio.load(komik.data)
 	const list = []
 
 
@@ -82,7 +90,6 @@ const komikList = async (title, genre, status, berwarna, sortby, tipe) => {
 
 	return list
 }
-
 
 const manhuaList = async (query) => {
 	const komik = await get('https://bacakomik.co/manhua/')
@@ -159,9 +166,9 @@ const genresList = async () =>{
 
 
 const test = async () =>{
-	data = await recentUpdate()
+	const data = await komikList(undefined,undefined, undefined,undefined,undefined,undefined, undefined)
 	console.log(data);
 }
 
-
+test()
 
