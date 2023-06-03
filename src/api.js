@@ -1,4 +1,4 @@
-import { Manga, komikList, recentUpdate } from './index.js'
+import { searchKomik, Komik, recentUpdate, manhuaList, manhwaList, coloredManga, genresList } from './index.js'
 import  express  from 'express'
 const app = express()
 const port = 3001
@@ -18,8 +18,31 @@ app.get('/recent', async (req, res) =>{
 
 app.get('/komik', async (req, res) =>{
     const { p, q, genre, type, status, colored, order } = req.query
-    console.log(genre);
     const data = await searchKomik(q, genre, status, colored, order, type, p)
+    res.status(200).json(data)
+})
+
+app.get('/manhua', async (req, res) =>{
+    const { p } = req.query
+    const data = await manhuaList(p)
+    res.status(200).json(data)
+})
+
+app.get('/manhwa', async (req, res) =>{
+    const { p } = req.query
+    const data = await manhwaList(p)
+    res.status(200).json(data)
+})
+
+app.get('/colored', async (req, res) =>{
+    const { p } = req.query
+    const data = await coloredManga(p)
+    res.status(200).json(data)
+})
+
+app.get('/genre', async (req, res) =>{
+    const { p } = req.query
+    const data = await genresList()
     res.status(200).json(data)
 })
 

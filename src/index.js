@@ -91,9 +91,9 @@ export const searchKomik = async (title, genre, status, berwarna, sortby, tipe, 
 	return list
 }
 
-const manhuaList = async (query) => {
-	const komik = await get('https://bacakomik.co/manhua/')
-	const $ = load(komik.data)
+export const manhuaList = async (page) => {
+	const komik = await axios.get(`https://bacakomik.co/manhua/page/${page || 1}`)
+	const $ = cheerio.load(komik.data)
 	const list = []
 
 
@@ -110,9 +110,9 @@ const manhuaList = async (query) => {
 }
 
 
-const manhwaList = async (query) => {
-	const komik = await get('https://bacakomik.co/manhwa/')
-	const $ = load(komik.data)
+export const manhwaList = async (page) => {
+	const komik = await axios.get(`https://bacakomik.co/manhwa/page/${page || 1}`)
+	const $ = cheerio.load(komik.data)
 	const list = []
 
 
@@ -129,9 +129,9 @@ const manhwaList = async (query) => {
 }
 
 
-const coloredManga = async (page) =>{
-	const data = await get('https://bacakomik.co/komik-terbaru')
-	const $ = load(data.data);
+export const coloredManga = async (page) =>{
+	const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page || 1}`)
+	const $ = cheerio.load(data.data);
 	const coloredList = []
 
 	
@@ -148,9 +148,9 @@ const coloredManga = async (page) =>{
 }
 
 
-const genresList = async () =>{
-	const data = await get('https://bacakomik.co/daftar-genre/')
-	const $ = load(data.data)
+export const genresList = async () =>{
+	const data = await axios.get('https://bacakomik.co/daftar-genre/')
+	const $ = cheerio.load(data.data)
 	const list = []
 
 
@@ -161,12 +161,24 @@ const genresList = async () =>{
 	return list
 }
 
+export const chapter = async () =>{
+	const data = await axios.get('https://bacakomik.co/chapter/black-clover-chapter-02-bahasa-indonesia/')
+	const $ = cheerio.load(data.data)
+	const list = []
+
+	$('.chapter-area .chapter-images #chimg-auh img').each((i, el) =>{
+		list.push($(el).attr('src').replace('i2.wp.com/', ''))
+	})
+
+	return list
+}
+
 
 
 
 
 const test = async () =>{
-	const data = await komikList(undefined,undefined, undefined,undefined,undefined,undefined, undefined)
+	const data = await chapter()
 	console.log(data);
 }
 
