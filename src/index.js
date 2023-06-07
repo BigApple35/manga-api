@@ -35,7 +35,7 @@ export const Komik = async (title) =>{
 }
 
 export const recentUpdate = async (page) =>{
-	const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page}/`)
+	const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page || 1}/`)
 	const $ = cheerio.load(data.data);
 	const recentList = []
 
@@ -43,6 +43,7 @@ export const recentUpdate = async (page) =>{
 	$('.listupd .animepost .animposx').each((e, i) =>{
 		recentList.push({
 			nama : 	$(i).find('h4').html(),
+			slug : $(i).find('h4').html().replaceAll(' ', '-'),
 			cover : $(i).find('img').attr('src'),
 			chapter : $(i).find('.bigor .adds a').text(),
 			tipe : $(i).find('.typeflag').attr('class').split(' ')[1],
@@ -161,9 +162,22 @@ export const genresList = async () =>{
 	return list
 }
 
-export const chapter = async () =>{
-	const data = await axios.get('https://bacakomik.co/chapter/black-clover-chapter-02-bahasa-indonesia/')
+export const chapter = async (slug, chapter) =>{
+	let data
+
+	try {
+		data = await axios.get(`https://bacakomik.co/chapter/${slug}-chapter-${chapter}-bahasa-indonesia/`)
+	} catch (error) {
+		const status = error.response.status
+
+		if(status == 404){
+			data = await axios.get(`https://bacakomik.co/chapter/${slug}-chapter-0${chapter}-bahasa-indonesia/`)
+		}
+	}
+
+
 	const $ = cheerio.load(data.data)
+	
 	const list = []
 
 	$('.chapter-area .chapter-images #chimg-auh img').each((i, el) =>{
@@ -178,7 +192,7 @@ export const chapter = async () =>{
 
 
 const test = async () =>{
-	const data = await chapter()
+	const data = await chapter('boruto', 1)
 	console.log(data);
 }
 
