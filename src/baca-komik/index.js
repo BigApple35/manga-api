@@ -193,8 +193,8 @@ export const chapter = async (slug, chapter) =>{
 
 const test = async () =>{
 	const data = await chapter('boruto', 1)
-	console.log(data);
+	console.log(data );
 }
 
-test()
+
 

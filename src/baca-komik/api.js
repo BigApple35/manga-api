@@ -1,13 +1,20 @@
 import { searchKomik, Komik, recentUpdate, manhuaList, manhwaList, coloredManga, genresList } from './index.js'
 import  express  from 'express'
-const app = express()
+const app = express.Router()
 const port = 3001
 
 
 app.get('/manga', async (req, res) =>{
-    const { t } = req.query
-    const mangaData = await Komik(t)
-    res.status(200).json(mangaData)
+    try {
+        const { t } = req.query
+        if(!t){
+            res.send('pls enter manga name')
+        }
+        const mangaData = await Komik(t)
+        res.status(200).json(mangaData)
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 app.get('/recent', async (req, res) =>{
@@ -46,6 +53,6 @@ app.get('/genre', async (req, res) =>{
     res.status(200).json(data)
 })
 
-app.listen(port, () =>{
-    console.log('api is ready');
-})
+
+
+export default app
