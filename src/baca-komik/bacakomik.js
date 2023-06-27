@@ -1,7 +1,7 @@
 import { searchKomik, Komik, recentUpdate, manhuaList, manhwaList, coloredManga, genresList } from './index.js'
 import  express  from 'express'
 const app = express.Router()
-const port = 3001
+
 
 
 app.get('/manga', async (req, res) =>{
@@ -18,9 +18,16 @@ app.get('/manga', async (req, res) =>{
 })
 
 app.get('/recent', async (req, res) =>{
-    const { p } = req.query
-    const data = await recentUpdate(p)
-    res.status(200).json(data)
+    try {
+        const { p } = req.query
+        
+        const data = await recentUpdate(p)
+        console.log(data);
+        
+        res.status(200).json(data)
+    } catch (error) {
+        return
+    }
 })
 
 app.get('/komik', async (req, res) =>{

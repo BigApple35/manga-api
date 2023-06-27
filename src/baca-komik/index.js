@@ -34,25 +34,44 @@ export const Komik = async (title) =>{
 
 }
 
-export const recentUpdate = async (page) =>{
-	const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page || 1}/`)
-	const $ = cheerio.load(data.data);
-	const recentList = []
+export const recentUpdate = async (page = 1) =>{
+	try {
+		const data = await axios.get(`https://bacakomik.co/komik-terbaru/page/${page}/`)
+		const $ = cheerio.load(data.data);
+		const recentList = []
 
-	
-	$('.listupd .animepost .animposx').each((e, i) =>{
-		recentList.push({
-			nama : 	$(i).find('h4').html(),
-			slug : $(i).find('h4').html().replaceAll(' ', '-'),
-			cover : $(i).find('img').attr('src'),
-			chapter : $(i).find('.bigor .adds a').text(),
-			tipe : $(i).find('.typeflag').attr('class').split(' ')[1],
-		});
-	})
+		
+		$('.listupd .animepost .animposx').each((e, i) =>{
+			recentList.push({
+				nama : 	$(i).find('h4').html(),
+				slug : $(i).find('h4').html().replaceAll(' ', '-'),
+				cover : $(i).find('img').attr('src'),
+				chapter : $(i).find('.bigor .adds a').text(),
+				tipe : $(i).find('.typeflag').attr('class').split(' ')[1],
+			});
+		})
 
-	return recentList
+
+		return recentList
+	} catch (error) {
+		console.log(error);
+	}
 }
 
+export const popular = async () =>{
+	const data = await axios.get('https://bacakomik.co/komik-terbaru/')
+	const $ = cheerio.load(data.data)
+	const result = []
+
+	$('.senc .widget-post .serieslist li').each((i, el) =>{
+		result.push({
+			title : $(el).find('h4 a').html(),
+			cover : $(el).find('img').attr('src')
+		})
+	})
+
+	return result
+}
 
 export const searchKomik = async (title, genre, status, berwarna, sortby, tipe, page) => {
 	
@@ -190,11 +209,9 @@ export const chapter = async (slug, chapter) =>{
 
 
 
-
 const test = async () =>{
-	const data = await chapter('boruto', 1)
-	console.log(data );
+	const data = await recentUpdate()
+	console.log(data);
 }
-
 
 

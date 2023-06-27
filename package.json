@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "kr" : "node ./src/kiryuu/scrap.js",
     "api": "node src/api.js",
     "api-dev": "src/api.js"
   },
