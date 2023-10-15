@@ -16,6 +16,6 @@ app.use('/bk', bacakomik)
 app.use('/kr', kiryuu)
 
 
-app.listen(process.env.PORT || 3001, () => {
+app.listen(process.env.PORT || 4000, () => {
     console.warn("\nReady 🚀");
   });
